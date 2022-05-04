@@ -14,27 +14,33 @@ services:
       - MYSQL_DATABASE=nodedb
       - MYSQL_ROOT_PASSWORD=root
     networks:
-      - node-network
+      - docker-compose-bootstrap-network
 
   app:
+    build: 
+      context: ./source_files/node
+      dockerfile: Dockerfile.prod
     image: adrianpereira/random-user-insert-node-app-mysql:prod
     container_name: app
     entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh index.js
     networks:
-      - node-network
+      - docker-compose-bootstrap-network
     depends_on:
       - db
 
   nginx:
+    build: 
+      context: ./source_files/nginx
+      dockerfile: Dockerfile.prod
     image: adrianpereira/random-user-insert-nginx-node:prod
     container_name: nginx
     networks:
-      - node-network
+      - docker-compose-bootstrap-network
     ports:
       - "8080:8080"
     depends_on:
       - app
 
 networks:
-  node-network:
+  docker-compose-bootstrap-network:
     driver: bridge

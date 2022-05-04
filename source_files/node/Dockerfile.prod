@@ -2,6 +2,8 @@ FROM node:15-alpine
 
 COPY . .
 
+RUN npm install
+
 RUN apk add wget
 
 ENV DOCKERIZE_VERSION v0.6.1
